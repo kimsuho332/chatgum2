@@ -3,9 +3,12 @@ import dropbox
 
 app = Flask(__name__)
 
-DROPBOX_TOKEN = "여기에_너의_dropbox_access_token_입력"
-dbx = dropbox.Dropbox(DROPBOX_TOKEN)
-
+  # Dropbox 인증 정보
+        self.APP_KEY = "gbgcgfcmt8h7mfi"  # Dropbox App Console → "App key"
+        self.APP_SECRET = "b38y7dtuflte4p5"  # Dropbox App Console → "App secret"
+        self.REFRESH_TOKEN = "Jb1158wBIKIAAAAAAAAAAaLB5xPV5PMkoRKjBO-jNqsvoEgYO621xujGkBG5u69N"  # 네가 받은 리프레시 토큰
+        self.access_token = self.refresh_access_token()
+        self.dbx = dropbox.Dropbox(self.access_token)
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -71,4 +74,6 @@ def submit_score():
     return redirect(url_for("index"))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    import os
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
