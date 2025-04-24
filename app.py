@@ -1,14 +1,20 @@
 from flask import Flask, render_template, request, redirect, url_for
 import dropbox
+import os
 
 app = Flask(__name__)
 
-  # Dropbox 인증 정보
-        self.APP_KEY = "gbgcgfcmt8h7mfi"  # Dropbox App Console → "App key"
-        self.APP_SECRET = "b38y7dtuflte4p5"  # Dropbox App Console → "App secret"
-        self.REFRESH_TOKEN = "Jb1158wBIKIAAAAAAAAAAaLB5xPV5PMkoRKjBO-jNqsvoEgYO621xujGkBG5u69N"  # 네가 받은 리프레시 토큰
-        self.access_token = self.refresh_access_token()
-        self.dbx = dropbox.Dropbox(self.access_token)
+# Dropbox 인증 정보 (환경 변수에서 가져오기 권장)
+APP_KEY = os.getenv("APP_KEY", "gbgcgfcmt8h7mfi")  # Dropbox App Console → "App key"
+APP_SECRET = os.getenv("APP_SECRET", "b38y7dtuflte4p5")  # Dropbox App Console → "App secret"
+REFRESH_TOKEN = os.getenv("REFRESH_TOKEN", "Jb1158wBIKIAAAAAAAAAAaLB5xPV5PMkoRKjBO-jNqsvoEgYO621xujGkBG5u69N")  # 리프레시 토큰
+
+# Dropbox 클라이언트 초기화 (리프레시 토큰 사용)
+dbx = dropbox.Dropbox(
+    oauth2_refresh_token=REFRESH_TOKEN,
+    app_key=APP_KEY,
+    app_secret=APP_SECRET
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -74,6 +80,4 @@ def submit_score():
     return redirect(url_for("index"))
 
 if __name__ == "__main__":
-    import os
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(debug=True)
